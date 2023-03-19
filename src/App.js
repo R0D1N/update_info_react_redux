@@ -1,57 +1,39 @@
 import React, {useState} from 'react';
 import './styles/App.scss';
 import Postlist from "./components/Postlist"
+import PostForm from "./components/PostForm";
 
 function App() {
 
-
     const [posts, setPosts] = useState([])
 
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
+    const createPost = (newPost) => {
+        let id = posts.length + 1;
 
-
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        const newPost = {
-            key: Date.now(),
-            id: posts[posts.length - 1]?.id + 1 || 1,
-            title,
-            description
-        }
-        if (!title || !description) {
-            return alert('Заполните все поля')
-        }else{
-            setPosts([...posts, newPost])
-            setTitle('')
-            setDescription('')
-        }
-
+        do{
+            if(isUniqId(id)){
+                newPost.id = id;
+                setPosts([...posts, newPost])
+            }else{
+                id++;
+            }
+        }while(!isUniqId(newPost.id))
     }
 
-    const handleChangeTitle = (event) => {
-        setTitle(event.target.value)
-    }
-    const handleChangeDescription = (event) => {
-        setDescription(event.target.value)
+    const isUniqId = (id) => {
+        return !posts.some(post => post.id === id)
     }
 
+    const deletePost = (id) => {
+        setPosts(posts.filter(post => post.id !== id))
+    }
 
     return (
         <div className="App">
-            <form onSubmit={handleSubmit}>
-                <input value={title} type="text" onChange={handleChangeTitle} placeholder="Post title"/>
-                <input value={description} type="text" onChange={handleChangeDescription} placeholder="Post description"/>
-                <button type="submit">Create post</button>
-            </form>
-
-            <Postlist posts={posts}/>
+            <PostForm create={createPost}/>
+            <Postlist posts={posts} delete={deletePost}/>
         </div>
     );
 }
-
-
-
 
 export default App;
