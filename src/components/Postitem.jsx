@@ -1,6 +1,9 @@
 import React from 'react';
 
 const Postitem = (props) => {
+        const deletePost = () => {
+            props.delete(props.post.id);
+        }
 
         return (
             <div className="post">
@@ -10,7 +13,7 @@ const Postitem = (props) => {
                     <div>{props.post.description}</div>
                 </div>
                 <div className="post__btns">
-                    <button>Delete</button>
+                    <button onClick={deletePost}>Delete</button>
                 </div>
             </div>
         );
